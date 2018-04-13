@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example that shows off a responsive email layout.">
+    <title>E-mail App in Vue.js</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
+    <!--[if lte IE 8]>
+            <link rel="stylesheet" href="css/layouts/email-old-ie.css">
+        <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="css/layouts/email.css">
+    <!--<![endif]-->
+    <link rel="stylesheet" href="css/layouts/custom.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        /* #map {
+            height: 100%;
+        } */
+
+        /* Makes the sample page fill the window. */
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div>Search</div>
+    <div id="app">
+        <div id="layout" class="content pure-g">
+            <div id="nav" class="pure-u">
+                <a href="#" class="nav-menu-button">Menu</a>
+
+                <div class="nav-inner">
+                    <button id="compose" class="primary-button pure-button" @click="btn_addEmails">Add Email</button>
+
+                    <div class="pure-menu">
+                        <ul class="pure-menu-list">
+                            <li id="linkInbox" class="pure-menu-item">
+                                <a href="#" class="pure-menu-link" @click="displayInbox()">Inbox
+                                    <span class="email-count" id="inboxCounter"></span>
+                                </a>
+                            </li>
+                            <li class="pure-menu-item">
+                                <a href=" # " id="linkTrash" class="pure-menu-link" @click="displayTrash()">Trash</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="list" class="pure-u-1" v-if="isEmpty()">No emails.</div>
+            <div id="list" class="pure-u-1" v-else>
+                <!-- Individual e-mail item list -->
+                <div class="email-item pure-g" :class="{ 'email-item-selected' : selected(index) }" v-for="email, index in filteredEmails"
+                    @click="selectEmail(email, index)">
+                    <div class="pure-u">
+                        <img width="64" height="64" alt="Yahoo! News&#x27; avatar" class="email-avatar" :src="email.avatar" :title="email.name">
+                    </div>
+
+                    <div class="pure-u-3-4">
+                        <h5 class="email-name">{{ email.name }}</h5>
+                        <h4 class="email-subject">{{ email.subject }}</h4>
+                        <p class="email-desc">
+                            {{ email.body.substr(0,99) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="main" class="pure-u-1" v-if="isEmpty()">No emails.</div>
+            <div id="main" class="pure-u-1" v-else>
+                <div class="email-content">
+                    <div class="email-content-header pure-g">
+                        <div class="pure-u-1-2">
+                            <h1 class="email-content-title">{{ filteredEmails[selectedEmail].subject }}</h1>
+                            <p class="email-content-subtitle">
+                                From
+                                <a>{{ filteredEmails[selectedEmail].name }}</a> at
+                                <span>{{ filteredEmails[selectedEmail].time }}, {{ filteredEmails[selectedEmail].date }}</span>
+                            </p>
+                        </div>
+
+                        <div class="email-content-controls pure-u-1-2">
+                            <button class="secondary-button pure-button" @click="deleteEmail(filteredEmails[selectedEmail].id)">{{ this.currentFolder === 'inbox' ? 'Delete' : 'Move to Inbox'}}</button>
+                            <button class="secondary-button pure-button" @click="speak('speak')">
+                                {{ this.speaking === true ? 'Speaking' : 'Speak'}}
+                            </button>
+                            <button class="secondary-button pure-button" id="stop" @click="speak('stop')">Stop</button>
+                        </div>
+                    </div>
+
+                    <div class="email-content-body">
+                        {{ filteredEmails[selectedEmail].body }}
+                    </div>
+
+                    <!-- <div class="address">
+                        Postal Code:
+                        <span class="postalCode">{{ filteredEmails[selectedEmail].postalcode }}</span>
+                    </div> -->
+
+                    <!-- Map will only work with HTTPS -->
+                    <!-- <google-map name="map"></google-map>
+                    <div id="warnings-panel"></div> -->
+                    <!-- /#map -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /#app -->
+
+    <!-- Scripts -->
+    <!-- Google Maps API -->
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-WaMAosU5oj7P8V8zeET2xO_K4GnsGXs"></script> -->
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://yui-s.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+    <script src="js/app-vue.js"></script>
+    <script>
+        YUI().use('node-base', 'node-event-delegate', function (Y) {
+
+            var menuButton = Y.one('.nav-menu-button'),
+                nav = Y.one('#nav');
+
+            // Setting the active class name expands the menu vertically on small screens.
+            menuButton.on('click', function (e) {
+                nav.toggleClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
